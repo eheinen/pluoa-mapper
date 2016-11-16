@@ -1,16 +1,20 @@
 module PluoaMapper
-    def get_mapping(page, field_name)
+    def get_mapping(page, field_name, index = '')
         path = ENV['PAGES_MAPPING_PATH']
         raise "You need include your path in your env.rb using ENV['PAGES_MAPPING_PATH']" if path.nil?
         page_mapped = YAML.load_file(path + format_page_to_file(page) + '.yml')
         field_mapped = page_mapped[field_name]
         raise "The field name #{field_name} was not mapped in #{page}" if field_name.nil?
-        return field_mapped
+        return field_mapped + build_index(index)
     rescue
         puts "There is no page called #{page} in path #{path} "
     end
 
     private
+
+    def build_index(_index)
+        _index.to_s.empty? ? '' : " index:#{_index} "
+    end
 
     def format_page_to_file(page)
         unless page.nil?
